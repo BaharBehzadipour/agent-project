@@ -20,9 +20,10 @@ if __name__ == "__main__":
         iterations=3
     )
 
-    image.save("results/final_architecture.png")
+    image.save("/content/architect_agents/results")
 
     print("\nFinal prompt:")
     print(prompt)
 
     print("Final score:", score)
+
