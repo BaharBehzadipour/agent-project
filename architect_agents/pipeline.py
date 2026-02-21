@@ -15,7 +15,7 @@ class ArchitecturePipeline:
             StyleAgent(),
             PeriodAgent(),
             CountryAgent(),
-            MaterialAgent(),
+            # MaterialAgent(),
             FunctionAgent(),
             CompositionAgent()
         ]
@@ -25,11 +25,11 @@ class ArchitecturePipeline:
         self.critic = CriticAgent()
         self.refiner = RefinementAgent()
 
-    def run(self, metadata, sketch_path, conditioning_path, iterations=3):
+    def run(self, metadata,  conditioning_path, iterations=3):
         prompt = self.composer.act(metadata)
 
         for i in range(iterations):
-            image = self.executor.generate(sketch_path, conditioning_path, prompt)
+            image = self.executor.generate( conditioning_path, prompt)
             score = self.critic.score(image, prompt)
             print(f"Iteration {i+1} score: {score:.3f}")
 
@@ -37,5 +37,6 @@ class ArchitecturePipeline:
 
             if score > 0.9:
                 break
+
 
         return image, prompt, score
