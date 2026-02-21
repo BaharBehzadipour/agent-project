@@ -9,13 +9,13 @@ if __name__ == "__main__":
         "purpose": "cathedral"
     }
 
-    sketch_path = "data/images/000000.jpg"
+    # sketch_path = "data/images/000000.jpg"
     conditioning_path = "data/conditioning_images/000000.jpg"
 
     pipe = ArchitecturePipeline()
     image, prompt, score = pipe.run(
         metadata,
-        sketch_path,
+        # sketch_path,
         conditioning_path,
         iterations=3
     )
@@ -24,4 +24,5 @@ if __name__ == "__main__":
 
     print("\nFinal prompt:")
     print(prompt)
+
     print("Final score:", score)
