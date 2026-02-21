@@ -5,7 +5,7 @@ from diffusers import StableDiffusionControlNetPipeline, ControlNetModel
 class ControlNetExecutor:
     def __init__(
         self,
-        controlnet_path="fintuned_controlnet",
+        controlnet_path="/content/drive/MyDrive/epoch 50000",
         base_model="runwayml/stable-diffusion-v1-5"
     ):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -26,9 +26,10 @@ class ControlNetExecutor:
         image = self.pipe(
             prompt=prompt,
             image=cond,
-            num_inference_steps=30,
-            guidance_scale=7.5
+            num_inference_steps=100
+            # guidance_scale=7.5
         ).images[0]
 
 
         return image
+
