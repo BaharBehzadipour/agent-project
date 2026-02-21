@@ -9,16 +9,18 @@ class ControlNetExecutor:
         base_model="runwayml/stable-diffusion-v1-5"
     ):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
-
-        self.controlnet = ControlNetModel.from_pretrained(controlnet_path).to(self.device)
+        self.dtype = torch.float16 if self.device == "cuda" else torch.float32
+        
+        self.controlnet = ControlNetModel.from_pretrained(controlnet_path,
+                                                         torch_dtype=self.dtype).to(self.device)
 
         self.pipe = StableDiffusionControlNetPipeline.from_pretrained(
             base_model,
             controlnet=self.controlnet,
-            torch_dtype=torch.float16 if self.device == "cuda" else torch.float32
+            torch_dtype=self.dtype
         ).to(self.device)
 
-    def generate(self, sketch_path: str, conditioning_path: str, prompt: str):
+    def generate(self,conditioning_path: str, prompt: str):
         cond = Image.open(conditioning_path).convert("RGB")
 
         image = self.pipe(
@@ -27,5 +29,6 @@ class ControlNetExecutor:
             num_inference_steps=30,
             guidance_scale=7.5
         ).images[0]
+
 
         return image
