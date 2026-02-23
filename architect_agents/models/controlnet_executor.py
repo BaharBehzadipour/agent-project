@@ -5,7 +5,7 @@ from diffusers import StableDiffusionControlNetPipeline, ControlNetModel
 class ControlNetExecutor:
     def __init__(
         self,
-        controlnet_path="/content/drive/MyDrive/epoch 50000",
+        controlnet_path="/content/drive/MyDrive/checkpoints/checkpoints/merged_checkpoint",
         base_model="runwayml/stable-diffusion-v1-5"
     ):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -32,4 +32,5 @@ class ControlNetExecutor:
 
 
         return image
+
 
