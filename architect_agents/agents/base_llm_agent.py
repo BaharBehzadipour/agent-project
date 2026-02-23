@@ -6,7 +6,7 @@ class BaseLLMAgent:
     def __init__(
         self,
         model="openai/gpt-oss-120b",
-        api_key=None,
+        api_key="Bearer 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",
         temperature=0.3,
     ):
         self.model = model
@@ -54,3 +54,4 @@ class BaseLLMAgent:
         ]
 
         return self.call_llm(messages)
+
