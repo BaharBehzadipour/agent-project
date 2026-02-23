@@ -26,11 +26,12 @@ class ControlNetExecutor:
         image = self.pipe(
             prompt=prompt,
             image=cond,
-            num_inference_steps=100
+            num_inference_steps=30
             # guidance_scale=7.5
         ).images[0]
 
 
         return image
+
 
 
