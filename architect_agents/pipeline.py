@@ -16,7 +16,7 @@ class ArchitecturePipeline:
             PeriodAgent(),
             CountryAgent(),
             # MaterialAgent(),
-            FunctionAgent(),
+            # FunctionAgent(),
             CompositionAgent()
         ]
 
@@ -30,7 +30,14 @@ class ArchitecturePipeline:
 
         for i in range(iterations):
             image = self.executor.generate( conditioning_path, prompt)
-            score = self.critic.score(image, prompt)
+            sketch = Image.open(conditioning_path).convert("RGB")
+            # score = self.critic.score(image, prompt)
+            score=self.critic.score(
+                image=image,
+                prompt=prompt,
+                sketch=sketch,
+                metadata=metadata
+            )
             print(f"Iteration {i+1} score: {score:.3f}")
 
             prompt = self.refiner.refine(prompt, score)
@@ -40,3 +47,4 @@ class ArchitecturePipeline:
 
 
         return image, prompt, score
+
