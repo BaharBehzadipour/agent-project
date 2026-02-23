@@ -8,6 +8,7 @@ from agents.prompt_composer import PromptComposer
 from agents.critic_agent import CriticAgent
 from agents.refinement_agent import RefinementAgent
 from models.controlnet_executor import ControlNetExecutor
+from PIL import Image
 
 class ArchitecturePipeline:
     def __init__(self):
@@ -47,4 +48,5 @@ class ArchitecturePipeline:
 
 
         return image, prompt, score
+
 
