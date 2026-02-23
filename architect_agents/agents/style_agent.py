@@ -9,41 +9,36 @@
 
 #         )
 
+from .base_llm_agent import BaseLLMAgent
 
 
+class StyleAgent(BaseLLMAgent):
 
-import torch
-from PIL import Image
-from diffusers import StableDiffusionControlNetPipeline, ControlNetModel
+    def __init__(self):
+        super().__init__()
 
-class ControlNetExecutor:
-    def __init__(
-        self,
-        controlnet_path="/content/drive/MyDrive/checkpoints/checkpoints/merged_checkpoint",
-        base_model="runwayml/stable-diffusion-v1-5"
-    ):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
-        self.dtype = torch.float16 if self.device == "cuda" else torch.float32
-        
-        self.controlnet = ControlNetModel.from_pretrained(controlnet_path,
-                                                         torch_dtype=self.dtype).to(self.device)
+    def act(self, metadata: dict) -> str:
 
-        self.pipe = StableDiffusionControlNetPipeline.from_pretrained(
-            base_model,
-            controlnet=self.controlnet,
-            torch_dtype=self.dtype
-        ).to(self.device)
+        style = metadata.get("style")
+        if not style:
+            return ""
 
-    def generate(self,conditioning_path: str, prompt: str):
-        cond = Image.open(conditioning_path).convert("RGB")
+        system = "You are an expert architectural prompt engineer."
 
-        image = self.pipe(
-            prompt=prompt,
-            image=cond,
-            num_inference_steps=30
-            # guidance_scale=7.5
-        ).images[0]
+        user = f"""
+Create a concise but descriptive architectural prompt fragment.
 
+Architectural style: {style}
 
-        return image
+Requirements:
+- Preserve characteristic forms
+- Preserve ornamentation language
+- Preserve façade composition
+- Preserve structural proportions
+- Use terminology appropriate for architectural design prompts
 
+Return only the prompt text.
+Keep it compact but visually descriptive.
+"""
+
+        return self.generate(system, user)
