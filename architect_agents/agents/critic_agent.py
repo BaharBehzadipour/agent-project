@@ -86,14 +86,30 @@ class CriticAgent:
 
         return self._cosine(img_emb, txt_emb)
 
+    # def score_aesthetic(self, image):
+    #     """
+    #     نسخه ساده:
+    #     sharpness / contrast proxy
+    #     می‌تونی بعداً مدل aesthetic predictor بذاری
+    #     """
+    #     img = torch.tensor(image).float()
+    #     return float(img.std() / 255.0)
+
     def score_aesthetic(self, image):
-        """
-        نسخه ساده:
-        sharpness / contrast proxy
-        می‌تونی بعداً مدل aesthetic predictor بذاری
-        """
-        img = torch.tensor(image).float()
-        return float(img.std() / 255.0)
+    
+        import torchvision.transforms as T
+    
+        transform = T.Compose([
+            T.Resize((224, 224)),
+            T.ToTensor()
+        ])
+    
+        img = transform(image).unsqueeze(0).to(self.device)
+    
+        # اگر مدل aesthetic داری اینجا پاس بده
+        score = self.aesthetic_model(img)
+    
+        return score.item()
 
     # --------------------------------------------------
     # final score
@@ -126,3 +142,4 @@ class CriticAgent:
         #     "aesthetic": s_aes
         # }
         return final
+
