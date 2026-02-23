@@ -16,7 +16,7 @@ class BaseLLMAgent:
             raise ValueError("API key required")
 
         self.headers = {
-            "Authorization": f"Bearer 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",
+            "Authorization": f"Bearer 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",
             "Content-Type": "application/json",
         }
 
@@ -54,5 +54,6 @@ class BaseLLMAgent:
         ]
 
         return self.call_llm(messages)
+
 
 
