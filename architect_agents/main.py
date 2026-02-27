@@ -10,7 +10,7 @@ if __name__ == "__main__":
     }
 
     # sketch_path = "data/images/000000.jpg"
-    conditioning_path = "data/conditioning_images/000000.jpg"
+    conditioning_path = "/content/drive/MyDrive/validation/validation/conditioning_images/000029.jpg"
 
     pipe = ArchitecturePipeline()
     image, prompt, score = pipe.run(
@@ -20,7 +20,7 @@ if __name__ == "__main__":
         iterations=3
     )
 
-    image.save("/content/architect_agents/results")
+    image.save("/content/agent-project/architect_agents/results.png")
 
     print("\nFinal prompt:")
     print(prompt)
