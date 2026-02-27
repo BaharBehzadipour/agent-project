@@ -125,13 +125,14 @@ class CriticAgent:
         s_prompt = self.score_prompt_alignment(image, prompt)
         s_sketch = self.score_sketch_alignment(image, sketch)
         s_meta = self.score_metadata_alignment(image, metadata)
-        s_aes = self.score_aesthetic(image)
+        # s_aes = self.score_aesthetic(image)
 
         final = (
             self.w_prompt * s_prompt +
             self.w_sketch * s_sketch +
-            self.w_metadata * s_meta +
-            self.w_aesthetic * s_aes
+            self.w_metadata * s_meta 
+            # +
+            # self.w_aesthetic * s_aes
         )
 
         # return {
