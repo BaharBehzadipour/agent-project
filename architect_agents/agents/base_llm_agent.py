@@ -6,7 +6,7 @@ class BaseLLMAgent:
     def __init__(
         self,
         model="openai/gpt-oss-120b",
-        api_key="Bearer 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",
+        api_key="Bearer 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",
         temperature=0.3,
     ):
         self.model = model
@@ -16,7 +16,7 @@ class BaseLLMAgent:
             raise ValueError("API key required")
 
         self.headers = {
-            "Authorization": f"Bearer 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",
+            "Authorization": f"Bearer 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",
             "Content-Type": "application/json",
         }
 
