@@ -65,7 +65,7 @@ import json
 class BaseLLMAgent:
     def __init__(
         self,
-        model="gemini-2.5-flash",
+        model="gemini-3.5-flash-lite",
         api_key=None,
         temperature=0.3,
     ):
