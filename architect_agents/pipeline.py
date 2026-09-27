@@ -29,6 +29,10 @@ class ArchitecturePipeline:
     def run(self, metadata,  conditioning_path, iterations=3):
         prompt = self.composer.act(metadata)
 
+        best_image = None
+        best_prompt = None
+        best_score = float("-inf")
+
         for i in range(iterations):
             image = self.executor.generate( conditioning_path, prompt)
             sketch = Image.open(conditioning_path).convert("RGB")
@@ -41,12 +45,16 @@ class ArchitecturePipeline:
             )
             print(f"Iteration {i+1} score: {score:.3f}")
 
+            if score > best_score:
+                best_score = score
+                best_image = image
+                best_prompt = prompt
+                print(f"  -> new best (score={best_score:.3f})")
+
             prompt = self.refiner.refine(prompt, score)
 
             if score > 0.9:
                 break
 
 
-        return image, prompt, score
-
-
+        return best_image, best_prompt, best_score
