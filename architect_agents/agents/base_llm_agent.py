@@ -125,6 +125,7 @@ class BaseLLMAgent:
             url=self.url,
             headers=self.headers,
             data=json.dumps(payload),
+            timeout=60,  # seconds; avoids hanging forever on network issues
         )
         response.raise_for_status()
         response = response.json()
