@@ -3,7 +3,8 @@
 * resizes every image so its short side = --size (default 640)
 * sketch: --mode provided      -> keep the paper's sketches (resized without losing lines)
           --mode adaptive_canny -> regenerate stronger sketches from the photo (recommended)
-* writes new jsonl files (same fields, new `image` / `cond` paths)
+* writes new jsonl files (same fields, `image` / `cond` stored RELATIVE to the cache folder,
+  so you can copy the folder to Drive / Colab and keep using it)
 
 Run (after step 1):
   python scripts/02_cache_and_sketch.py --in_dir clean_data --out_dir cache --mode adaptive_canny
@@ -35,7 +36,8 @@ def work(args):
     img.save(ip, quality=95)
     sk.save(cp)
     r = dict(r)
-    r["image"], r["cond"] = ip, cp
+    r["image"] = os.path.join("images", r["id"] + ".jpg")      # relative -> the cache folder is portable
+    r["cond"] = os.path.join("sketches", r["id"] + ".png")
     return r
 
 

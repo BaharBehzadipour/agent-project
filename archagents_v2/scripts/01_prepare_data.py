@@ -6,9 +6,11 @@ Outputs : <out_dir>/{train,val,test}.jsonl, taxonomy.json, stats.json, cooc.json
 
 Run:
   python scripts/01_prepare_data.py \
-      --train_meta  "/path/metadata (2).jsonl" --train_root /path/dataset/train \
-      --test_meta   "/path/metadata (3).jsonl" --test_root  /path/dataset/test \
+      --train_meta "/path/train_metadata.jsonl" --test_meta "/path/test_metadata.jsonl" \
+      --root /path/to/dataset \
       --out_dir clean_data
+(--root = the one folder that contains images/ and conditioning_images/; use --train_root/--test_root
+ instead only if train and test images live in different folders)
 Use --no_check_files to skip the file-existence check (e.g. on a laptop without images).
 """
 import argparse
@@ -22,10 +24,14 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from archa import taxonomy as T  # noqa: E402
 
 
-def resolve(root, rel):
-    """metadata says images/000029.jpg ; some layouts keep only the basename."""
-    for cand in (os.path.join(root, rel), os.path.join(root, os.path.basename(os.path.dirname(rel)),
-                                                       os.path.basename(rel))):
+def resolve(root, rel, kind):
+    """Find a file for a metadata path like images/000029.jpg.
+
+    Works for: <root>/images/000029.jpg, <root>/conditioning_images/000029.jpg and a flat
+    <root>/000029.jpg (kind = "images" | "conditioning_images" is used for the sub-folder guess).
+    """
+    base = os.path.basename(rel)
+    for cand in (os.path.join(root, rel), os.path.join(root, kind, base), os.path.join(root, base)):
         if os.path.exists(cand):
             return cand
     return None
@@ -40,7 +46,8 @@ def load(meta_path, root, check_files):
             img = os.path.join(root, j["file_name"])
             cond = os.path.join(root, j["conditioning_file_name"])
             if check_files:
-                img, cond = resolve(root, j["file_name"]), resolve(root, j["conditioning_file_name"])
+                img = resolve(root, j["file_name"], "images")
+                cond = resolve(root, j["conditioning_file_name"], "conditioning_images")
                 if img is None or cond is None:
                     missing += 1
                     continue
@@ -66,9 +73,10 @@ def group_key(r, title_counts):
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--train_meta", required=True)
-    ap.add_argument("--train_root", required=True)
+    ap.add_argument("--root", default=None, help="one folder holding ALL images/sketches (train+test together)")
+    ap.add_argument("--train_root", default=None)
     ap.add_argument("--test_meta", required=True)
-    ap.add_argument("--test_root", required=True)
+    ap.add_argument("--test_root", default=None)
     ap.add_argument("--out_dir", default="clean_data")
     ap.add_argument("--val_size", type=int, default=600)
     ap.add_argument("--seed", type=int, default=0)
@@ -76,6 +84,10 @@ def main():
     ap.add_argument("--keep_placeholder_rows", action="store_true",
                     help="keep rows whose labels are template echoes (default: drop from train/val)")
     a = ap.parse_args()
+    a.train_root = a.train_root or a.root
+    a.test_root = a.test_root or a.root
+    if not a.train_root or not a.test_root:
+        ap.error("give --root (one folder for everything) or both --train_root and --test_root")
     os.makedirs(a.out_dir, exist_ok=True)
 
     train, m1 = load(a.train_meta, a.train_root, not a.no_check_files)
