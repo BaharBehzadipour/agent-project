@@ -1,0 +1,18 @@
+torch>=2.1
+torchvision
+diffusers==0.31.0
+transformers==4.46.3
+accelerate==1.1.1
+peft==0.13.2
+safetensors
+numpy<2
+pillow
+scipy
+scikit-image
+opencv-python-headless==4.10.0.84
+lpips
+clean-fid
+matplotlib
+tqdm
+requests
+# optional (saves GPU memory / speeds up):  xformers  bitsandbytes
